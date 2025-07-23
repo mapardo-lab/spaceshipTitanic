@@ -26,7 +26,7 @@ def plot_bars(df: pd.DataFrame, features: list , n_rows: int, n_cols: int, sort 
         if not sort:
             counts = counts.loc[sorted(counts.index)]
         plt.subplot(n_rows, n_cols, i)
-        plt.xlabel(feature)
+        plt.title(feature)
         plt.ylabel(ylabel)
         ax = counts.plot.bar()
         ax.set_xticklabels(ax.get_xticklabels(), 
@@ -132,5 +132,6 @@ def na_plot(df, threshold = 1):
                       rotation=45,
                       ha='right',  # Horizontal alignment
                       rotation_mode='anchor')
+    plt.ylabel("Percentage of NA values")
     plt.tight_layout()
     plt.show()
