@@ -1,13 +1,11 @@
 import numpy  as np  
 import pandas as pd
 import math
-
 import seaborn as sns
 import matplotlib.pyplot as plt
-
 from adjustText import adjust_text
-
 from scipy.stats import ttest_ind
+from matplotlib.colors import LinearSegmentedColormap
 
 
 def plot_bars(df: pd.DataFrame, features: list , n_rows: int, n_cols: int, sort = False, log = False):
@@ -28,6 +26,7 @@ def plot_bars(df: pd.DataFrame, features: list , n_rows: int, n_cols: int, sort 
         plt.subplot(n_rows, n_cols, i)
         plt.title(feature)
         plt.ylabel(ylabel)
+        plt.xlabel("")
         ax = counts.plot.bar()
         ax.set_xticklabels(ax.get_xticklabels(), 
                       rotation=45,
@@ -49,6 +48,21 @@ def plot_density(df: pd.DataFrame, features: list , n_rows: int, n_cols: int):
         plt.ylabel('Density')
     plt.show()
     
+def plot_density_cat(df: pd.DataFrame, features: list , target: str, n_rows: int, n_cols: int):
+    """
+    Plots kernel density estimates (KDE) for multiple features, stratified by a categorical target variable.
+    This function generates a grid of KDE subplots to visualize the distribution of numerical features,
+    grouped by a categorical target. Each subplot overlays density curves for different target classes.
+    """
+    plt.figure(figsize=(6 * n_cols, 4 * n_rows))  # Dynamic figure size
+    for i, feature in enumerate(features,start=1):
+        plt.subplot(n_rows, n_cols, i)
+        sns.kdeplot(data=df, x=feature, fill=True, hue=target, alpha=0.5, palette='viridis')
+        sns.kdeplot(data=df, x=feature, linewidth=0.5, color='black')
+        plt.xlabel(feature)
+        plt.ylabel('Density')
+    plt.show()
+    
 def plot_estimator_feature_contquant(df: pd.DataFrame, estimator: str, features: list , n_rows: int, n_cols: int):
     """
     Scatter plots features vs estimator showing PCC and MI
@@ -65,29 +79,36 @@ def plot_estimator_feature_contquant(df: pd.DataFrame, estimator: str, features:
     plt.show()
 
 
-def plot_correlation_vs_mi(features):
+def plot_stat_vs_mi_num(features, label):
     """
-    Scatter plot for PCC vs MI
+    Scatter plot for statistic vs MI for numerical variables
     """
-    plt.figure(figsize=(4, 4))
-    plt.plot(features['pcc'], features['mi'],'o')
-    plt.xlabel('PCC')
-    plt.ylabel('MI')
+    plt.figure(figsize=(6, 5))
+    plt.plot(features['stat'], features['mi'],'o', markersize = 5)
     texts = [plt.text(
-        features['pcc'][i], features['mi'][i], features['feature'][i], ha='center', va='center') for i in range(len(features['feature']))]
-    adjust_text(texts, arrowprops=dict(arrowstyle='->', color='red'))
+        features['stat'][i], features['mi'][i], features['feature'][i], ha='center', va='center', fontsize = 10) 
+             for i in range(len(features['feature']))]
+    adjust_text(texts, arrowprops=dict(arrowstyle='-', color='red'), force_text = 5)
+    
+    plt.xlabel("MI")
+    plt.ylabel(label)
     plt.show()
     
-def plot_anova_vs_mi(features):
+def plot_stat_vs_mi_cat(df, label):
     """
-    Scatter plot for ANOVA vs MI
+    Scatter plot for statistic vs MI for categorical variables
     """
-    plt.figure(figsize=(4, 4))
-    sns.scatterplot(x=features['ftest'], y=features['mi'], hue=features['feature'], palette='viridis')
-    plt.xlabel('F-test')
-    plt.ylabel('MI')
-    plt.show()
+    plt.figure(figsize=(6, 5))
+    sns.scatterplot(data=df, x='stat', y='mi', hue='feature', palette='viridis', s=20)
 
+    texts = [plt.text(df['stat'][i], df['mi'][i], df['level'][i], ha='center', va='center', fontsize = 10) for i in range(len(df['level']))]
+    adjust_text(texts, arrowprops=dict(arrowstyle='-', color='red'), force_text = 5)
+
+    plt.xlabel("MI")
+    plt.ylabel(label)
+    plt.legend(title='Feature')
+    plt.show()
+    
 def plot_estimator_feature_qualit_bi(df: pd.DataFrame, estimator: str, features: list , n_rows: int, n_cols: int):
     """
     Violin plots and t-test p-value for correlation between estimator and features with two factors
@@ -134,4 +155,44 @@ def na_plot(df, threshold = 1):
                       rotation_mode='anchor')
     plt.ylabel("Percentage of NA values")
     plt.tight_layout()
+    plt.show()
+    
+def heatmap_triangle(df, label):
+    """
+    Plot a lower triangular heatmap with values between 0 and 1.
+    """
+    # generate a mask for the upper triangle
+    mask = np.zeros_like(df, dtype=bool)
+    mask[np.triu_indices_from(mask)] = True
+
+    # set up the matplotlib figure
+    f, ax = plt.subplots(figsize=(6, 5))
+
+    # draw the heatmap with the mask and correct aspect ratio
+    sns.heatmap(df, mask=mask,vmin = 0.0, vmax=1.0, center=0.5,
+            linewidths=.1, cmap="YlGnBu", cbar_kws={"shrink": .8, "label": label})
+
+    plt.show()
+    
+def heatmap_threshold(df, threshold, label):
+    """
+    Plot a heatmap with a threshold-based colormap, where values above the threshold
+    are displayed in solid blue and values below use a gradient (YlGnBu).
+    """
+    # set up the matplotlib figure
+    f, ax = plt.subplots(figsize=(6, 5))
+    # create custom colormap
+    n_threshold_colors = int(threshold*256)
+    cmap = plt.get_cmap('YlGnBu', n_threshold_colors)
+    new_colors = cmap(np.linspace(0, 1, n_threshold_colors))
+    # set colors above threshold to solid blue
+    blue_color = np.array([0.03137255, 0.11372549, 0.34509804, 1])
+    new_colors = np.vstack([new_colors, np.tile(blue_color,(256-n_threshold_colors,1))])
+    new_cmap = LinearSegmentedColormap.from_list('trunc_YlGnBu', new_colors)
+
+    sns.heatmap(df, cmap=new_cmap, vmin=0, vmax=1,
+                center=0.5, linewidths=.1, 
+                annot = True, fmt = ".2f",
+                cbar_kws={"shrink": .8, "label": label})
+    
     plt.show()
