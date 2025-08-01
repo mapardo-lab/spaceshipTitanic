@@ -62,6 +62,49 @@ def plot_density_cat(df: pd.DataFrame, features: list , target: str, n_rows: int
         plt.xlabel(feature)
         plt.ylabel('Density')
     plt.show()
+
+
+def plot_bars_target(df: pd.DataFrame, features: list , target: str, sort = False, log = False):
+    """
+    Generate a grid of bar plots showing target distribution in levels and frequency of levels.
+    """
+    n_cols = 2
+    n_rows = len(features)
+    fig, axes = plt.subplots(n_rows,n_cols,figsize=(4 * n_cols ,3 * n_rows))
+    axes = axes.flatten()
+    width = 0.5
+    for ax1, ax2, feature in zip(axes[::2], axes[1::2], features):
+        # count number of ocurrences
+        counts = df[feature].value_counts()
+        counts.index = list(map(str, counts.index.tolist()))
+        # contingency table
+        prop = pd.crosstab(df[feature],df[target], normalize = 'index')
+        prop.index = list(map(str, prop.index.tolist()))
+        # some modifications 
+        if log:
+            counts = np.log10(counts)
+            ylabel = 'log(count)'
+        else:
+            ylabel = 'Count'
+        if not sort:
+            counts = counts.loc[sorted(counts.index)]
+        # plot distribution of target in levels
+        prop = prop.reindex(counts.index)
+        levels = prop.index.astype(str).tolist()
+        values = prop.to_dict('list')
+        bottom = np.zeros(prop.shape[0])
+        for boolean, value in values.items():
+            ax1.bar(levels, value, width, label=boolean, bottom=bottom)
+            bottom += value
+        ax1.set_title(feature)
+        ax1.legend(loc="upper right")
+        # plot distribution of labels 
+        levels = counts.index
+        value = list(counts)
+        ax2.bar(levels, value, width)
+        ax2.set_title(feature)
+    plt.tight_layout()  # Prevent label clipping
+    plt.show()
     
 def plot_estimator_feature_contquant(df: pd.DataFrame, estimator: str, features: list , n_rows: int, n_cols: int):
     """
