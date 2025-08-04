@@ -223,7 +223,7 @@ def heatmap_threshold(df, threshold, label):
     are displayed in solid blue and values below use a gradient (YlGnBu).
     """
     # set up the matplotlib figure
-    f, ax = plt.subplots(figsize=(6, 5))
+    f, ax = plt.subplots(figsize=(9, 7))
     # create custom colormap
     n_threshold_colors = int(threshold*256)
     cmap = plt.get_cmap('YlGnBu', n_threshold_colors)
