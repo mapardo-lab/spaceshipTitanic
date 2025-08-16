@@ -1,0 +1,14 @@
+General
+# TODO Video Imputation Kaggle
+# TODO Feature importance (Random Forest)
+# TODO HistGradienteBoostingClassifier (Gradient Boosting)
+# TODO Two models: Model 1 => CryoSleep == True (do not use expenses features) + Model 2 => CryoSleep == False
+# TODO Multinomial logistic regression imputation https://statisticsglobe.com/mode-imputation/
+
+EDACryoSleep
+# TODO Build new features and check correlations with others and target
+# TODO Prediction selecting only True CryoSleep
+# TODO Compare with prediction without splitting
+# TODO Check EDA
+# TODO Normalize plots by number of Transported True/False
+

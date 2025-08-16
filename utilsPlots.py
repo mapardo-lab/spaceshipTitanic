@@ -50,20 +50,28 @@ def plot_density(df: pd.DataFrame, features: list , n_rows: int, n_cols: int):
     
 def plot_density_cat(df: pd.DataFrame, features: list , target: str, n_rows: int, n_cols: int):
     """
-    Plots kernel density estimates (KDE) for multiple features, stratified by a categorical target variable.
-    This function generates a grid of KDE subplots to visualize the distribution of numerical features,
-    grouped by a categorical target. Each subplot overlays density curves for different target classes.
+    Plot kernel density estimates (KDE) for multiple features stratified by a categorical target.
+    
+    Generates a grid of subplots showing KDE plots for each specified feature, with distributions
+    separated by the target categories. Each feature appears in two adjacent subplots:
+    - Left subplot: KDE with separate density curves (common_norm=False)
+    - Right subplot: KDE with normalized density curves (common_norm=True)
     """
-    plt.figure(figsize=(6 * n_cols, 4 * n_rows))  # Dynamic figure size
+    num_features = len(features)
+    plt.figure(figsize=(12, 4 * num_features))  # Dynamic figure size
     for i, feature in enumerate(features,start=1):
-        plt.subplot(n_rows, n_cols, i)
+        plt.subplot(num_features, 2, i*2)
         sns.kdeplot(data=df, x=feature, fill=True, hue=target, alpha=0.5, palette='viridis')
         sns.kdeplot(data=df, x=feature, linewidth=0.5, color='black')
         plt.xlabel(feature)
         plt.ylabel('Density')
+        plt.subplot(num_features, 2, (i*2)-1)
+        sns.kdeplot(data=df, x=feature, fill=True, hue=target,
+            alpha=0.5, palette='viridis', common_norm = False)
+        plt.xlabel(feature)
+        plt.ylabel('Density')
     plt.show()
-
-
+    
 def plot_bars_target(df: pd.DataFrame, features: list , target: str, sort = False, log = False):
     """
     Generate a grid of bar plots showing target distribution in levels and frequency of levels.
@@ -222,8 +230,10 @@ def heatmap_threshold(df, threshold, label):
     Plot a heatmap with a threshold-based colormap, where values above the threshold
     are displayed in solid blue and values below use a gradient (YlGnBu).
     """
+    nrows = df.shape[0]
+    ncols = df.shape[1]
     # set up the matplotlib figure
-    f, ax = plt.subplots(figsize=(9, 7))
+    f, ax = plt.subplots(figsize=(ncols, nrows))
     # create custom colormap
     n_threshold_colors = int(threshold*256)
     cmap = plt.get_cmap('YlGnBu', n_threshold_colors)
