@@ -85,7 +85,7 @@ ul.task-list li input[type="checkbox"] {
 <p>Data contained 8,693 samples and 14 features. <code>Transported</code> feature was considered as target.</p>
 <p>There were 219 duplicated <code>Names</code> entries, although no <code>PassengerId</code> values were duplicated. Therefore, the dataset was assumed to be free of actual duplicates.</p>
 <p>Missing values were found in all features except <code>Transported</code> and <code>PassengerId</code> (<a href="#fig-na" class="quarto-xref">Figure&nbsp;1</a>). The percentages of missing values was around 2.0-2.5% and showed a random distribution (<a href="#fig-na-dist" class="quarto-xref">Figure&nbsp;2</a>). The percentage of samples without missing values was 76%.</p>
-<div id="cell-fig-na" class="cell" data-execution_count="9">
+<div id="cell-fig-na" class="cell" data-execution_count="8">
 <div class="cell-output cell-output-display">
 <div id="fig-na" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -99,7 +99,7 @@ Figure&nbsp;1: Percentage of missing values by feature (showing features with &g
 </div>
 </div>
 </div>
-<div id="cell-fig-na-dist" class="cell">
+<div id="cell-fig-na-dist" class="cell" data-execution_count="10">
 <div class="cell-output cell-output-display">
 <div id="fig-na-dist" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -124,28 +124,58 @@ Figure&nbsp;2: Distribution of missing values by feature
 </section>
 <section id="features-for-prediction." class="level3">
 <h3 class="anchored" data-anchor-id="features-for-prediction.">Features for prediction.</h3>
+<p>Some features had to be processed in a initial transformation step. The <code>Cabin</code> feature was splitted into three features: <code>Deck</code>, <code>Num</code> and <code>Side</code>, and the <code>Name</code> feature was splitted into <code>FirstName</code> and <code>Surname</code>.</p>
+<section id="continuous-quantitative" class="level4">
+<h4 class="anchored" data-anchor-id="continuous-quantitative">Continuous quantitative</h4>
+<p>First, <code>Age</code> and <code>Num</code> features were analyzed and distributions are shown in <a href="#fig-age-num" class="quarto-xref">Figure&nbsp;3</a>. The <code>Age</code> feature exhibits a bimodal distribution, with a small peak for very young children and a larger, more prominent peak for individuals in their early twenties. Plot suggests that younger passengers might have a lower probability of being transported. The <code>Num</code> feature’s distribution is right-skewed, indicating that most samples have low values for this feature. There appears to be an inverse relationship with the target: lower values for <code>Num</code> seem to correlate with a higher probability of being transported, while higher values correlate with a lower probability.</p>
+<div id="cell-fig-age-num" class="cell" data-execution_count="19">
+<div class="cell-output cell-output-display">
+<div id="fig-age-num" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-age-num-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="spaceshipTitanic_files/figure-html/fig-age-num-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-age-num-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Distribution of values for Age and Num features
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Additionally, we analyzed the expense-related features. Passengers with <code>CryoSleep</code> set to <code>True</code> were excluded from this analysis, as they incurred no expenses. For improved visualization, these features were transformed using a logarithmic scale (<a href="#fig-exp" class="quarto-xref">Figure&nbsp;4</a>)</p>
+<p>After the transformation, all expense features exhibited a bimodal distribution, with a primary peak at the lower end and a secondary peak around a log-scale value of three. The <code>TotalExpenses</code> feature was the exception; while it also showed a bimodal pattern, its more prominent peak was the one centered at the higher value.</p>
+<p>Passengers who spent more on <code>RoomService</code>, <code>Spa</code>, and <code>VRDeck</code> had a lower probability of being transported. This suggests a negative correlation between spending on these luxury services and the transportation outcome.</p>
+<div id="cell-fig-exp" class="cell" data-execution_count="21">
+<div class="cell-output cell-output-display">
+<div id="fig-exp" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-exp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="spaceshipTitanic_files/figure-html/fig-exp-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-exp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Distribution of values for features related to expenses
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 </section>
-<section id="feature-deck" class="level3">
-<h3 class="anchored" data-anchor-id="feature-deck">Feature ‘Deck’</h3>
-<p>Feature ‘Deck’ is splitted into three features ‘Deck’, ‘Num’ and ‘Side’</p>
-</section>
-<section id="feature-name" class="level3">
-<h3 class="anchored" data-anchor-id="feature-name">Feature ‘Name’</h3>
-<p>There is no useful information in the passengers’ names.</p>
-</section>
-<section id="feature-exploration" class="level3">
-<h3 class="anchored" data-anchor-id="feature-exploration">Feature exploration</h3>
-<section id="feature-num" class="level4">
-<h4 class="anchored" data-anchor-id="feature-num">Feature ‘Num’</h4>
-</section>
-<section id="feature-age" class="level4">
-<h4 class="anchored" data-anchor-id="feature-age">Feature ‘Age’</h4>
-</section>
-<section id="features-related-to-expenses" class="level4">
-<h4 class="anchored" data-anchor-id="features-related-to-expenses">Features related to expenses</h4>
-</section>
-<section id="categorical-features" class="level4">
-<h4 class="anchored" data-anchor-id="categorical-features">Categorical features</h4>
+<section id="categorical" class="level4">
+<h4 class="anchored" data-anchor-id="categorical">Categorical</h4>
+<div id="cell-fig-cat" class="cell" data-scrolled="true" data-execution_count="24">
+<div class="cell-output cell-output-display">
+<div id="fig-cat" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="spaceshipTitanic_files/figure-html/fig-cat-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Distribution of categorical features
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 </section>
 </section>
 <section id="new-features" class="level3">
@@ -168,8 +198,8 @@ Figure&nbsp;2: Distribution of missing values by feature
 <section id="numerical-features" class="level4">
 <h4 class="anchored" data-anchor-id="numerical-features">Numerical features</h4>
 </section>
-<section id="categorical-features-1" class="level4">
-<h4 class="anchored" data-anchor-id="categorical-features-1">Categorical features</h4>
+<section id="categorical-features" class="level4">
+<h4 class="anchored" data-anchor-id="categorical-features">Categorical features</h4>
 </section>
 </section>
 <section id="relationship-between-expenses-and-cryosleep-and-age-features" class="level3">

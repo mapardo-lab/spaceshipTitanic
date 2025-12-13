@@ -47,8 +47,22 @@ def plot_density(df: pd.DataFrame, features: list , n_rows: int, n_cols: int):
         plt.xlabel(feature)
         plt.ylabel('Density')
     plt.show()
-    
+
 def plot_density_cat(df: pd.DataFrame, features: list , target: str, n_rows: int, n_cols: int):
+    """
+    Plot kernel density estimates (KDE) for multiple features stratified by a categorical target.
+    """
+    num_features = len(features)
+    plt.figure(figsize=(6 * n_cols , 4 * n_rows)) 
+    for i, feature in enumerate(features,start=1):
+        plt.subplot(n_rows, n_cols, i)
+        sns.kdeplot(data=df, x=feature, fill=True, hue=target, alpha=0.5, palette='viridis')
+        sns.kdeplot(data=df, x=feature, linewidth=0.5, color='black')
+        plt.xlabel(feature)
+        plt.ylabel('Density')
+    plt.show()
+    
+def plot_two_density_cat(df: pd.DataFrame, features: list , target: str):
     """
     Plot kernel density estimates (KDE) for multiple features stratified by a categorical target.
     
