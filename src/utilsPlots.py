@@ -86,13 +86,14 @@ def plot_two_density_cat(df: pd.DataFrame, features: list , target: str):
         plt.ylabel('Density')
     plt.show()
     
-def plot_bars_target(df: pd.DataFrame, features: list , target: str, sort = False, log = False):
+def plot_bars_target(df: pd.DataFrame, features: list , target: str, n_rows: str, n_cols: str, sort = False, log = False):
     """
     Generate a grid of bar plots showing target distribution in levels and frequency of levels.
     """
-    n_cols = 2
-    n_rows = len(features)
-    fig, axes = plt.subplots(n_rows,n_cols,figsize=(4 * n_cols ,3 * n_rows))
+    #n_cols = 2
+    #n_rows = len(features)
+    #fig, axes = plt.subplots(n_rows,n_cols,figsize=(4 * n_cols ,3 * n_rows))
+    fig, axes = plt.subplots(n_rows,n_cols*2,figsize=(8 * n_cols ,3 * n_rows))
     axes = axes.flatten()
     width = 0.5
     for ax1, ax2, feature in zip(axes[::2], axes[1::2], features):
@@ -262,4 +263,48 @@ def heatmap_threshold(df, threshold, label):
                 annot = True, fmt = ".2f",
                 cbar_kws={"shrink": .8, "label": label})
     
+    plt.show()
+
+def plot_predictive_power(pp, score, n = None):
+    """
+    Plot a bar chart showing the predictive power of features.
+    """
+    if (n is None) or (n >= len(pp)):
+        n = len(pp) 
+    plt.figure(figsize=(10, 6))
+    sns.barplot(x='Score', y='Feature', data=pp[:n])
+    plt.ylabel('')
+    plt.xlabel(score)
+    plt.show()
+
+def heatmap_01_plot(df, triangle = False, threshold = None, label = ''):
+    """
+    Plot a 0–1 heatmap with optional upper-triangle masking and threshold-based coloring.
+    """
+    mask = np.zeros_like(df, dtype=bool)
+    if triangle:
+        # generate a mask for the upper triangle
+        mask[np.triu_indices_from(mask)] = True
+
+    # set up the matplotlib figure
+    size = df.shape[0] * 0.55
+    f, ax = plt.subplots(figsize=(size+1, size))
+
+    if threshold is not None:
+        # create custom colormap
+        n_threshold_colors = int(threshold*256)
+        init_cmap = plt.get_cmap('YlGnBu', n_threshold_colors)
+        new_colors = init_cmap(np.linspace(0, 1, n_threshold_colors))
+        # set colors above threshold to solid blue
+        blue_color = np.array([0.03137255, 0.11372549, 0.34509804, 1])
+        new_colors = np.vstack([new_colors, np.tile(blue_color,(256-n_threshold_colors,1))])
+        cmap = LinearSegmentedColormap.from_list('trunc_YlGnBu', new_colors)
+    else:
+        cmap = 'YlGnBu'
+    sns.heatmap(df, mask=mask, cmap=cmap, vmin=0, vmax=1,
+            center=0.5, linewidths=.1, 
+            fmt = ".2f",
+            cbar_kws={"shrink": .8, "label": label})
+    plt.xlabel('')
+    plt.ylabel('')
     plt.show()

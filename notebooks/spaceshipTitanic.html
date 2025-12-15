@@ -128,7 +128,7 @@ Figure&nbsp;2: Distribution of missing values by feature
 <section id="continuous-quantitative" class="level4">
 <h4 class="anchored" data-anchor-id="continuous-quantitative">Continuous quantitative</h4>
 <p>First, <code>Age</code> and <code>Num</code> features were analyzed and distributions are shown in <a href="#fig-age-num" class="quarto-xref">Figure&nbsp;3</a>. The <code>Age</code> feature exhibits a bimodal distribution, with a small peak for very young children and a larger, more prominent peak for individuals in their early twenties. Plot suggests that younger passengers might have a lower probability of being transported. The <code>Num</code> feature’s distribution is right-skewed, indicating that most samples have low values for this feature. There appears to be an inverse relationship with the target: lower values for <code>Num</code> seem to correlate with a higher probability of being transported, while higher values correlate with a lower probability.</p>
-<div id="cell-fig-age-num" class="cell" data-execution_count="19">
+<div id="cell-fig-age-num" class="cell" data-execution_count="18">
 <div class="cell-output cell-output-display">
 <div id="fig-age-num" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -145,7 +145,7 @@ Figure&nbsp;3: Distribution of values for Age and Num features
 <p>Additionally, we analyzed the expense-related features. Passengers with <code>CryoSleep</code> set to <code>True</code> were excluded from this analysis, as they incurred no expenses. For improved visualization, these features were transformed using a logarithmic scale (<a href="#fig-exp" class="quarto-xref">Figure&nbsp;4</a>)</p>
 <p>After the transformation, all expense features exhibited a bimodal distribution, with a primary peak at the lower end and a secondary peak around a log-scale value of three. The <code>TotalExpenses</code> feature was the exception; while it also showed a bimodal pattern, its more prominent peak was the one centered at the higher value.</p>
 <p>Passengers who spent more on <code>RoomService</code>, <code>Spa</code>, and <code>VRDeck</code> had a lower probability of being transported. This suggests a negative correlation between spending on these luxury services and the transportation outcome.</p>
-<div id="cell-fig-exp" class="cell" data-execution_count="21">
+<div id="cell-fig-exp" class="cell" data-execution_count="20">
 <div class="cell-output cell-output-display">
 <div id="fig-exp" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -162,7 +162,10 @@ Figure&nbsp;4: Distribution of values for features related to expenses
 </section>
 <section id="categorical" class="level4">
 <h4 class="anchored" data-anchor-id="categorical">Categorical</h4>
-<div id="cell-fig-cat" class="cell" data-scrolled="true" data-execution_count="24">
+<p>The distributions for the categorical features are shown in <a href="#fig-cat" class="quarto-xref">Figure&nbsp;5</a>. Most features have a clear majority class; for example, <code>Earth</code> is the most common <code>HomePlanet</code>, and <code>TRAPPIST-1e</code> is the most frequent <code>Destination</code>. For the <code>Deck</code> feature, decks <code>F</code> and <code>G</code> are the most populated.</p>
+<p>A strong relationship with the outcome is also evident. Passengers in <code>CryoSleep</code> are significantly more likely to be transported. A similar positive correlation is observed for passengers on decks <code>B</code> and <code>C</code>, who also have a higher transportation rate.</p>
+<p>The <code>Name</code> and <code>Surname</code> features contain 2,707 and 2,218 unique values, respectively.</p>
+<div id="cell-fig-cat" class="cell" data-scrolled="true" data-execution_count="21">
 <div class="cell-output cell-output-display">
 <div id="fig-cat" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -178,44 +181,77 @@ Figure&nbsp;5: Distribution of categorical features
 </div>
 </section>
 </section>
-<section id="new-features" class="level3">
-<h3 class="anchored" data-anchor-id="new-features">New features</h3>
+<section id="feature-enginering" class="level3">
+<h3 class="anchored" data-anchor-id="feature-enginering">Feature enginering</h3>
+<p>In this step, the features were prepared for model input by applying missing value imputation, scaling, and encoding. For numerical features, the median was used for imputation, while the most frequent value was used for categorical features. Expense-related features were imputed with zero for passengers in <code>CryoSleep</code>. Additionally, new features were engineered. For instance, <code>TotalExpenses</code> was created by summing all expense-related features. Other features were derived from the <code>Deck</code> feature by grouping some of its classes.</p>
+<p>Finally, 25 features were prepared for predictive power analysis and optimal feature selection.</p>
 </section>
-<section id="correlation-between-explanatory-features" class="level3">
-<h3 class="anchored" data-anchor-id="correlation-between-explanatory-features">Correlation between explanatory features</h3>
-<section id="numerical-features-pearson-correlation-coeficient" class="level4">
-<h4 class="anchored" data-anchor-id="numerical-features-pearson-correlation-coeficient">Numerical features (Pearson correlation coeficient)</h4>
+<section id="predictive-power-of-each-feature" class="level3">
+<h3 class="anchored" data-anchor-id="predictive-power-of-each-feature">Predictive power of each feature</h3>
+<p>Mutual information analysis of the features (<a href="#fig-mi-features" class="quarto-xref">Figure&nbsp;6</a>) shows that expense-related features and <code>CryoSleep</code> have the most significant predictive power. They are followed by features created by one hot enconding from <code>HomePlanet</code>, <code>Deck</code>, and <code>Destination</code>.</p>
+<div id="cell-fig-mi-features" class="cell" data-execution_count="27">
+<div class="cell-output cell-output-display">
+<div id="fig-mi-features" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mi-features-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="spaceshipTitanic_files/figure-html/fig-mi-features-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mi-features-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Mutual information of features
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>To analyze the relationships between numerical features, a Pearson correlation matrix was computed (<a href="#fig-features-corr" class="quarto-xref">Figure&nbsp;7</a>). High correlations were observed between <code>TotalExpenses</code> and the individual expense-related features. The strongest of these correlations were with <code>FoodCourt</code> and <code>VRDeck</code>.</p>
+<div id="cell-fig-features-corr" class="cell" data-execution_count="28">
+<div class="cell-output cell-output-display">
+<div id="fig-features-corr" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-features-corr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="spaceshipTitanic_files/figure-html/fig-features-corr-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-features-corr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Pearson correlation between features
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>A similar analysis was conducted for categorical features using Cramer’s V to evaluate their associations (<a href="#fig-features-cramer" class="quarto-xref">Figure&nbsp;8</a>). The strongest relationships were observed among features derived from the same source variable, such as those based on <code>Destination</code>, <code>HomePlanet</code>, and <code>Deck</code>.</p>
+<div id="cell-fig-features-cramer" class="cell">
+<div class="cell-output cell-output-display">
+<div id="fig-features-cramer" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-features-cramer-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="spaceshipTitanic_files/figure-html/fig-features-cramer-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-features-cramer-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Cramer’s V for categorical features
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Finally, mutual information between all the features was calculated (<a href="#fig-matrix-mi" class="quarto-xref">Figure&nbsp;9</a>). Same strong relationships mentioned above were observed, being clearer the relationship between <code>TotalExpenses</code> and the individual expense-related features. a new strong relationship was observed between <code>CryoSleep</code> and <code>TotalExpenses</code>.</p>
+<div id="cell-fig-matrix-mi" class="cell" data-execution_count="49">
+<div class="cell-output cell-output-display">
+<div id="fig-matrix-mi" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-matrix-mi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="spaceshipTitanic_files/figure-html/fig-matrix-mi-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-matrix-mi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9: Mutual information matrix
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<section id="optimal-subset-of-features." class="level4">
+<h4 class="anchored" data-anchor-id="optimal-subset-of-features.">Optimal subset of features.</h4>
+<p>From the initial set of twenty-five features, an optimal subset was identified using a genetic algorithm. A linear regression model was employed to evaluate each candidate subset, and the process concluded with the selection of fifteen features.</p>
 </section>
-<section id="categorical-features-cramers-v-test" class="level4">
-<h4 class="anchored" data-anchor-id="categorical-features-cramers-v-test">Categorical features (Cramer’s V test)</h4>
-</section>
-<section id="categorical-vs-numeric-features-eta-squared" class="level4">
-<h4 class="anchored" data-anchor-id="categorical-vs-numeric-features-eta-squared">Categorical vs Numeric features (Eta squared)</h4>
-</section>
-</section>
-<section id="correlation-between-target-and-explanatory-features" class="level3">
-<h3 class="anchored" data-anchor-id="correlation-between-target-and-explanatory-features">Correlation between target and explanatory features</h3>
-<section id="numerical-features" class="level4">
-<h4 class="anchored" data-anchor-id="numerical-features">Numerical features</h4>
-</section>
-<section id="categorical-features" class="level4">
-<h4 class="anchored" data-anchor-id="categorical-features">Categorical features</h4>
-</section>
-</section>
-<section id="relationship-between-expenses-and-cryosleep-and-age-features" class="level3">
-<h3 class="anchored" data-anchor-id="relationship-between-expenses-and-cryosleep-and-age-features">Relationship between expenses and ‘CryoSleep’ and ‘Age’ features</h3>
-</section>
-<section id="conclusions" class="level3">
-<h3 class="anchored" data-anchor-id="conclusions">Conclusions</h3>
-<p>Based on the results obtained for the correlations between the explanatory variables and the correlations between the explanatory variables and the target variable, the following variable usage is planned:</p>
-<ul>
-<li><p>log10TotalExpenses, CryoSleep, and log10TotalExpenses1 are variables with strong potential to explain the target variable. However, they should not be used together because they exhibit high multicollinearity.</p></li>
-<li><p>HomePlanet shows a strong association with the target variable. Additionally, it has no significant correlation with the aforementioned variables, making it a good candidate to combine with them.</p></li>
-<li><p>Age12, unlike Age, displays a high association with the target variable. It is strongly correlated with log10TotalExpenses and log10TotalExpenses1, so the best combination would be with CryoSleep.</p></li>
-<li><p>The variable Deck is highly associated with the target variable, particularly Deck B. Levels C, E, and F also show strong (though slightly weaker) associations. However, Deck is highly correlated with HomePlanet and log10TotalExpenses. Using only Deck B eliminates these correlations, allowing it to be combined with the other variables.</p></li>
-<li><p>The variables Destination and Side exhibit some association with the target variable and no significant correlations with the other explanatory variables.</p></li>
-</ul>
-<p>Based on the observed data patterns, variables ‘CryoSleep’ and ‘Age’ can be confidently used to impute the expense-related variables. This imputation reduce the percentage of non-available values for the expense-related varaibles.</p>
 </section>
 </section>
 
