@@ -1,0 +1,67 @@
+run_name: 'base_run'
+data_file: 'train.csv'
+random_state: 42
+load_data:
+  module: 'pandas'
+  function: 'read_csv'
+  parameters: {}
+preproc_features: 
+  module: 'utilsPreproc'
+  function: 'preprocess_features01'
+preproc_target:
+  module: 'utilsPreproc'
+  function: 'preprocess_target01'
+test_split:
+#  test_size: 0.2
+#  stratify : 'target'
+proc:
+    module: 'utilsFT'
+    class: 'TransformMetadata'
+    function: 'get_transformation'
+    parameters: {'name': 'transform01'}
+test_size_val: 0.2
+search_space: 
+  {
+    'model': {
+        'n_estimators': {'type': 'int', 'low': 50, 'high': 150},
+        'max_depth': {'type': 'int', 'low': 15, 'high': 25},
+        'max_features': {'type': 'float', 'low': 0.1, 'high': 1.0},
+    }
+  }
+fixed_params: 
+  {
+    'model': {
+      'random_state': 42
+    }
+  }
+scoring:
+  rmse:
+    module: 'sklearn.metrics'
+    function: 'root_mean_squared_error'
+    parameters: {}
+  medAE:
+    module: 'sklearn.metrics'
+    function: 'median_absolute_error'
+    parameters: {}
+  r2:
+    module: 'sklearn.metrics'
+    function: 'r2_score'
+    parameters: {}
+model:
+  module: 'sklearn.ensemble'
+  class: 'RandomForestRegressor'
+cv: 5
+score: 'medAE'
+comments: 'Random Forest'
+num_trials: 10
+study:
+  {
+    'direction': 'minimize', # check score!! ('minimize', 'maximize')
+    'storage': 'sqlite:///optuna/optuna_ML_exercise.db',
+    'sampler': 
+          {
+            'n_startup_trials': 10,
+            'n_ei_candidates': 24,
+            'seed': 42
+          }
+  }

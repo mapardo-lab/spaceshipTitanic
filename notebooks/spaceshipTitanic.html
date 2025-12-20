@@ -189,7 +189,7 @@ Figure&nbsp;5: Distribution of categorical features
 <section id="predictive-power-of-each-feature" class="level3">
 <h3 class="anchored" data-anchor-id="predictive-power-of-each-feature">Predictive power of each feature</h3>
 <p>Mutual information analysis of the features (<a href="#fig-mi-features" class="quarto-xref">Figure&nbsp;6</a>) shows that expense-related features and <code>CryoSleep</code> have the most significant predictive power. They are followed by features created by one hot enconding from <code>HomePlanet</code>, <code>Deck</code>, and <code>Destination</code>.</p>
-<div id="cell-fig-mi-features" class="cell" data-execution_count="27">
+<div id="cell-fig-mi-features" class="cell" data-execution_count="28">
 <div class="cell-output cell-output-display">
 <div id="fig-mi-features" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -204,7 +204,7 @@ Figure&nbsp;6: Mutual information of features
 </div>
 </div>
 <p>To analyze the relationships between numerical features, a Pearson correlation matrix was computed (<a href="#fig-features-corr" class="quarto-xref">Figure&nbsp;7</a>). High correlations were observed between <code>TotalExpenses</code> and the individual expense-related features. The strongest of these correlations were with <code>FoodCourt</code> and <code>VRDeck</code>.</p>
-<div id="cell-fig-features-corr" class="cell" data-execution_count="28">
+<div id="cell-fig-features-corr" class="cell" data-execution_count="29">
 <div class="cell-output cell-output-display">
 <div id="fig-features-corr" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -219,7 +219,7 @@ Figure&nbsp;7: Pearson correlation between features
 </div>
 </div>
 <p>A similar analysis was conducted for categorical features using Cramer’s V to evaluate their associations (<a href="#fig-features-cramer" class="quarto-xref">Figure&nbsp;8</a>). The strongest relationships were observed among features derived from the same source variable, such as those based on <code>Destination</code>, <code>HomePlanet</code>, and <code>Deck</code>.</p>
-<div id="cell-fig-features-cramer" class="cell">
+<div id="cell-fig-features-cramer" class="cell" data-execution_count="30">
 <div class="cell-output cell-output-display">
 <div id="fig-features-cramer" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -234,7 +234,7 @@ Figure&nbsp;8: Cramer’s V for categorical features
 </div>
 </div>
 <p>Finally, mutual information between all the features was calculated (<a href="#fig-matrix-mi" class="quarto-xref">Figure&nbsp;9</a>). Same strong relationships mentioned above were observed, being clearer the relationship between <code>TotalExpenses</code> and the individual expense-related features. a new strong relationship was observed between <code>CryoSleep</code> and <code>TotalExpenses</code>.</p>
-<div id="cell-fig-matrix-mi" class="cell" data-execution_count="49">
+<div id="cell-fig-matrix-mi" class="cell" data-execution_count="32">
 <div class="cell-output cell-output-display">
 <div id="fig-matrix-mi" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
